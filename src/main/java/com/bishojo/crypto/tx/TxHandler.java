@@ -1,9 +1,15 @@
 package com.bishojo.crypto.tx;
 
 import com.bishojo.crypto.transaction.Transaction;
+import com.bishojo.crypto.utxo.UTXO;
 import com.bishojo.crypto.utxo.UTXOPool;
+import com.bishojo.crypto.validation.InputValidator;
+import com.bishojo.crypto.validation.OutputValidator;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TxHandler {
+
+    private UTXOPool utxoPool;
 
     /**
      * Creates a public ledger whose current UTXOPool (collection of unspent transaction outputs) is
@@ -11,7 +17,7 @@ public class TxHandler {
      * constructor.
      */
     public TxHandler(UTXOPool utxoPool) {
-        // IMPLEMENT THIS
+        this.utxoPool = new UTXOPool(utxoPool);
     }
 
     /**
@@ -24,7 +30,28 @@ public class TxHandler {
      *     values; and false otherwise.
      */
     public boolean isValidTx(Transaction tx) {
-        // IMPLEMENT THIS
+
+        InputValidator inputValidator = new InputValidator(tx, utxoPool);
+        OutputValidator outputValidator = new OutputValidator(tx, utxoPool);
+
+        //1. all outputs claimed by tx are in the current UTXO pool
+        if (!outputValidator.txOutputsInUtxoPool()) {
+            return false;
+        }
+
+        //2. the signatures on each input of tx are valid
+        //4. all of txs output values are non-negative
+        //5 the sum of tx input values is greater than
+        // or equal to the sum of its output values
+        if (!inputValidator.isValidSignature()) {
+            return false;
+        }
+
+        //3. no UTXO is claimed multiple times by {@code tx}
+        if (!inputValidator.isUtxoClaimedOnce()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -34,7 +61,19 @@ public class TxHandler {
      * updating the current UTXO pool as appropriate.
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
-        // IMPLEMENT THIS
+
+        for (int i =0; i < possibleTxs.length; i++) {
+            if (!this.isValidTx(possibleTxs[i])) {
+                for (Transaction.Input txInput : possibleTxs[i].getInputs()) {
+                    UTXO utxo = new UTXO(txInput.prevTxHash, txInput.outputIndex);
+                    this.utxoPool.removeUTXO(utxo);
+
+                    ArrayUtils.remove(possibleTxs, i);
+                }
+
+            }
+        }
+
         return possibleTxs;
     }
 }

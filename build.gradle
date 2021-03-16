@@ -13,6 +13,7 @@ repositories {
 dependencies {
     compile 'org.junit.jupiter:junit-jupiter:5.7.1'
     compile 'org.mockito:mockito-core:3.7.7'
+    compile 'org.apache.commons:commons-lang3:3.1'
 }
 
 test {
