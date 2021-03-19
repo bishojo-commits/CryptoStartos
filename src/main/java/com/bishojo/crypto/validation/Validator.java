@@ -38,8 +38,6 @@ public class Validator {
 
     public Boolean inputSignatureIsValid()
     {
-        ArrayList<Transaction.Input> ins = tx.getInputs();
-
         for (int i = 0; i < tx.numInputs(); i++) {
             Transaction.Input input = tx.getInput(i);
             UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
