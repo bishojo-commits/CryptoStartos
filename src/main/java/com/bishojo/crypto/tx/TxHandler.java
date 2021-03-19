@@ -3,9 +3,10 @@ package com.bishojo.crypto.tx;
 import com.bishojo.crypto.transaction.Transaction;
 import com.bishojo.crypto.utxo.UTXO;
 import com.bishojo.crypto.utxo.UTXOPool;
-import com.bishojo.crypto.validation.InputValidator;
-import com.bishojo.crypto.validation.OutputValidator;
-import org.apache.commons.lang3.ArrayUtils;
+import com.bishojo.crypto.validation.Validator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TxHandler {
 
@@ -31,24 +32,30 @@ public class TxHandler {
      */
     public boolean isValidTx(Transaction tx) {
 
-        InputValidator inputValidator = new InputValidator(tx, utxoPool);
-        OutputValidator outputValidator = new OutputValidator(tx, utxoPool);
+        Validator validator = new Validator(tx, utxoPool);
 
-        //1. all outputs claimed by tx are in the current UTXO pool
-        if (!outputValidator.txOutputsInUtxoPool()) {
+        //1
+        if (!validator.outputsInUtxoPool()) {
             return false;
         }
 
-        //2. the signatures on each input of tx are valid
-        //4. all of txs output values are non-negative
-        //5 the sum of tx input values is greater than
-        // or equal to the sum of its output values
-        if (!inputValidator.isValidSignature()) {
+        //2
+        if (!validator.inputSignatureIsValid()) {
             return false;
         }
 
-        //3. no UTXO is claimed multiple times by {@code tx}
-        if (!inputValidator.isUtxoClaimedOnce()) {
+        //3
+        if (!validator.txUtxoIsUnique()) {
+            return false;
+        }
+
+        //4
+        if (!validator.allTxOutputsPositive()) {
+            return false;
+        }
+
+        //5
+        if(validator.getTotalOuput() > validator.getTotalInput()) {
             return false;
         }
 
@@ -62,18 +69,32 @@ public class TxHandler {
      */
     public Transaction[] handleTxs(Transaction[] possibleTxs) {
 
-        for (int i =0; i < possibleTxs.length; i++) {
-            if (!this.isValidTx(possibleTxs[i])) {
-                for (Transaction.Input txInput : possibleTxs[i].getInputs()) {
-                    UTXO utxo = new UTXO(txInput.prevTxHash, txInput.outputIndex);
-                    this.utxoPool.removeUTXO(utxo);
+        List<Transaction> validTx = new ArrayList<Transaction>();
 
-                    ArrayUtils.remove(possibleTxs, i);
+        for ( int i =0 ; i < possibleTxs.length ; i++) {
+            Transaction tx = possibleTxs[i];
+            if (isValidTx(tx)) {
+                validTx.add(tx);
+
+                // get all input coins from the tx and remove them from pool
+                for (int j = 0; j < tx.numInputs(); j++) {
+                    Transaction.Input input = tx.getInput(j);
+                    UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
+                    utxoPool.removeUTXO(utxo);
                 }
 
+               // get all output coins from the tx and add them to Pool
+                for (int k = 0; k < tx.numOutputs(); k++) {
+                    Transaction.Output out = tx.getOutput(k);
+                    UTXO utxo = new UTXO(tx.getHash(), k);
+                    utxoPool.addUTXO(utxo, out);
+                }
             }
         }
+        Transaction[] result = new Transaction[validTx.size()];
+        validTx.toArray(result);
 
-        return possibleTxs;
+        return result;
     }
 }
+
