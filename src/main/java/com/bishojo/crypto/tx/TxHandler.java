@@ -85,9 +85,9 @@ public class TxHandler {
 
                // get all output coins from the tx and add them to Pool
                 for (int k = 0; k < tx.numOutputs(); k++) {
-                    Transaction.Output out = tx.getOutput(k);
+                    Transaction.Output output = tx.getOutput(k);
                     UTXO utxo = new UTXO(tx.getHash(), k);
-                    utxoPool.addUTXO(utxo, out);
+                    utxoPool.addUTXO(utxo, output);
                 }
             }
         }
