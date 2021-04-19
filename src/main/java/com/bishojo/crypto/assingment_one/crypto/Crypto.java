@@ -1,4 +1,4 @@
-package com.bishojo.crypto.crypto;
+package com.bishojo.crypto.assingment_one.crypto;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

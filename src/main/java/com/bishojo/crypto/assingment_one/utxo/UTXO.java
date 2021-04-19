@@ -1,4 +1,4 @@
-package com.bishojo.crypto.utxo;
+package com.bishojo.crypto.assingment_one.utxo;
 
 import java.util.Arrays;
 

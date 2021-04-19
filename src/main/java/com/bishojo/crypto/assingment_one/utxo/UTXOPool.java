@@ -1,6 +1,6 @@
-package com.bishojo.crypto.utxo;
+package com.bishojo.crypto.assingment_one.utxo;
 
-import com.bishojo.crypto.transaction.Transaction;
+import com.bishojo.crypto.assingment_one.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
