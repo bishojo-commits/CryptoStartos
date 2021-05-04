@@ -1,8 +1,8 @@
 package com.bishojo.crypto.assingment_one.tx;
 
-import com.bishojo.crypto.assingment_one.transaction.Transaction;
-import com.bishojo.crypto.assingment_one.utxo.UTXO;
-import com.bishojo.crypto.assingment_one.utxo.UTXOPool;
+import com.bishojo.crypto.assignment_three.Transaction;
+import com.bishojo.crypto.assignment_three.UTXO;
+import com.bishojo.crypto.assignment_three.UTXOPool;
 import com.bishojo.crypto.assingment_one.validation.Validator;
 
 import java.util.ArrayList;
