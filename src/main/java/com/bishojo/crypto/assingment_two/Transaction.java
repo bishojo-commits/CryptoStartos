@@ -1,4 +1,4 @@
-package  com.bishojo.crypto.assingment_two;
+package com.bishojo.crypto.assingment_two;
 
 final public class Transaction {
     final int id;

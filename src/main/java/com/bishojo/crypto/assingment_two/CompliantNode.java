@@ -1,7 +1,8 @@
-package  com.bishojo.crypto.assingment_two;
+package com.bishojo.crypto.assingment_two;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import static java.util.stream.Collectors.toSet;
 
 /* CompliantNode refers to a node that follows the rules (not malicious)*/

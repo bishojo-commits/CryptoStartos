@@ -24,8 +24,7 @@ public class Validator {
         this.utxoPool = utxoPool;
     }
 
-    public Boolean outputsInUtxoPool()
-    {
+    public Boolean outputsInUtxoPool() {
         for (int i = 0; i < tx.numInputs(); i++) {
             Transaction.Input input = tx.getInput(i);
             UTXO u = new UTXO(input.prevTxHash, input.outputIndex);
@@ -36,8 +35,7 @@ public class Validator {
         return true;
     }
 
-    public Boolean inputSignatureIsValid()
-    {
+    public Boolean inputSignatureIsValid() {
         for (int i = 0; i < tx.numInputs(); i++) {
             Transaction.Input input = tx.getInput(i);
             UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
@@ -53,11 +51,10 @@ public class Validator {
         return true;
     }
 
-    public Boolean allTxOutputsPositive()
-    {
+    public Boolean allTxOutputsPositive() {
         for (int i = 0; i < tx.numOutputs(); i++) {
             Transaction.Output out = tx.getOutput(i);
-            if(out.value < 0) {
+            if (out.value < 0) {
                 return false;
             } else {
                 setTotalOuput(out.value);
@@ -66,15 +63,14 @@ public class Validator {
         return true;
     }
 
-    public Boolean txUtxoIsUnique()
-    {
+    public Boolean txUtxoIsUnique() {
         ArrayList<UTXO> allUTXO = utxoPool.getAllUTXO();
         Set<UTXO> setUTXO = new HashSet<UTXO>(allUTXO.size());
 
         for (int i = 0; i < tx.numInputs(); i++) {
             Transaction.Input input = tx.getInput(i);
             UTXO utxo = new UTXO(input.prevTxHash, input.outputIndex);
-            if(!setUTXO.add(utxo)) {
+            if (!setUTXO.add(utxo)) {
                 return false;
             }
         }

@@ -23,12 +23,12 @@ public class TxHandler {
 
     /**
      * @return true if:
-     * (1) all outputs claimed by {@code tx} are in the current UTXO pool, 
-     * (2) the signatures on each input of {@code tx} are valid, 
+     * (1) all outputs claimed by {@code tx} are in the current UTXO pool,
+     * (2) the signatures on each input of {@code tx} are valid,
      * (3) no UTXO is claimed multiple times by {@code tx},
      * (4) all of {@code tx}s output values are non-negative, and
      * (5) the sum of {@code tx}s input values is greater than or equal to the sum of its output
-     *     values; and false otherwise.
+     * values; and false otherwise.
      */
     public boolean isValidTx(Transaction tx) {
 
@@ -55,7 +55,7 @@ public class TxHandler {
         }
 
         //5
-        if(validator.getTotalOuput() > validator.getTotalInput()) {
+        if (validator.getTotalOuput() > validator.getTotalInput()) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public class TxHandler {
 
         List<Transaction> validTx = new ArrayList<Transaction>();
 
-        for ( int i =0 ; i < possibleTxs.length ; i++) {
+        for (int i = 0; i < possibleTxs.length; i++) {
             Transaction tx = possibleTxs[i];
             if (isValidTx(tx)) {
                 validTx.add(tx);
@@ -83,7 +83,7 @@ public class TxHandler {
                     utxoPool.removeUTXO(utxo);
                 }
 
-               // get all output coins from the tx and add them to Pool
+                // get all output coins from the tx and add them to Pool
                 for (int k = 0; k < tx.numOutputs(); k++) {
                     Transaction.Output output = tx.getOutput(k);
                     UTXO utxo = new UTXO(tx.getHash(), k);
